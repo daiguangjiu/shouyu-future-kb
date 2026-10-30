@@ -44,11 +44,13 @@ def run(cmd, desc, allow_fail=False):
 def main():
     step('=== 授渔未来 · 每周刷新开始 ===')
 
-    # 0. 恢复比对基线（上次构建产出的内容指纹快照）
+    # 0. 同步比对基线：以上次构建产出的内容指纹快照为准
     snap = os.path.join(OUT, 'data_prev.json')
-    if os.path.exists(snap) and not os.path.exists('work/data_prev.json'):
+    if os.path.exists(snap):
         shutil.copy(snap, 'work/data_prev.json')
-        step('已恢复内容指纹基线用于差异比对')
+        step('已同步上次构建的内容指纹基线用于差异比对')
+    elif os.path.exists('work/data_prev.json'):
+        step('沿用 work 目录中的基线快照')
 
     # 1. 抓取闲鱼官方内容（授渔学堂 + 社区公约）
     run(f'{PY} work/scrape.py', '抓取闲鱼官方文章（CMS 接口）')
@@ -80,6 +82,13 @@ def main():
 
     # 7. 构建站点
     run(f'{PY} work/build3.py', '构建静态站点')
+
+    # 7.5 回写新基线：下次刷新要与本次结果比对，而不是与最初基线比对
+    try:
+        shutil.copy(os.path.join(OUT, 'data_prev.json'), 'work/data_prev.json')
+        step('已回写内容指纹基线，供下次刷新比对')
+    except Exception as e:
+        step(f'⚠ 基线回写失败 {e}')
 
     # 8. 变更摘要
     try:
