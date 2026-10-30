@@ -2,14 +2,34 @@
 # -*- coding: utf-8 -*-
 """授渔未来 · 对外知识库重建 v3
 1) 对外化清洗：去内部核查痕迹 / 删AI示意图占位 / 剔除内部版本日志与测试条目
-2) 按对外知识库逻辑重划类目模块（6 模块 / 24 板块）
-3) 重算关联推荐，输出 data3.json
+2) 按对外知识库逻辑重划类目模块（6 模块 / 21 板块）
+3) 与上一版快照比对 → 标记新增/更新条目，追加更新日志
+4) 重算关联推荐，输出 data3.json + changelog.json
 """
-import json, re, math, html as H
+import json, re, math, html as H, hashlib, time, datetime, os
 from collections import Counter
 
 src = json.load(open('work/data2.json', encoding='utf-8'))
 items = {it['id']: it for s in src['sections'] for it in s['items']}
+
+# ---------- 变更比对：上一版快照 ----------
+PREV_PATH = 'work/data_prev.json'
+LOG_PATH = 'work/changelog.json'
+prev = {}
+if os.path.exists(PREV_PATH):
+    try:
+        prev = json.load(open(PREV_PATH, encoding='utf-8')).get('items', {})
+    except Exception:
+        prev = {}
+IS_BASELINE = not prev          # 无快照 = 首次收录基线
+NOW = int(time.time())
+STAMP = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+
+
+def content_hash(h):
+    """忽略空白差异的内容指纹"""
+    n = re.sub(r'\s+', '', h or '')
+    return hashlib.md5(n.encode('utf-8')).hexdigest()[:12]
 
 # ========== 1. 对外化清洗 ==========
 DROP_IDS = {'sec-1', 'a497114254628229'}   # 最近更新(内部版本日志) / 测试(垃圾条目)
@@ -118,6 +138,7 @@ print(f'归类校验通过：{len(assigned)} 条，无重复/遗漏')
 # ========== 3. 构建新数据 ==========
 new_sections = []
 kept = []
+changes = []
 # 同名条款去歧义：同一规则在「社区规则」与「最新公告」各有一份，后出现的标注来源
 title_total = {}
 for _mod, _sub, _col, _secs in M:
@@ -136,6 +157,21 @@ for mod, sub, col, secs in M:
             if it['kind'] == 'chapter':
                 html = DISCLAIMER + html
             text = to_text(html)
+            # —— 变更比对 ——
+            ch = content_hash(html)
+            p = prev.get(it['id'])
+            if IS_BASELINE:
+                is_new, is_updated, upd_at = False, False, 0
+                change_type = 'baseline'
+            elif p is None:
+                is_new, is_updated, upd_at = True, False, NOW
+                change_type = 'new'
+            elif p.get('hash') != ch:
+                is_new, is_updated, upd_at = False, True, NOW
+                change_type = 'updated'
+            else:
+                is_new, is_updated, upd_at = False, False, p.get('updated_at', 0)
+                change_type = None
             title = it['title']
             if title_total.get(title, 0) > 1:
                 title_seen[title] = title_seen.get(title, 0) + 1
@@ -152,6 +188,10 @@ for mod, sub, col, secs in M:
                 'html': html,
                 'text': text,
                 'toc': it.get('toc') or [],
+                'hash': ch,
+                'is_new': is_new,
+                'is_updated': is_updated,
+                'updated_at': upd_at,
                 'meta': {
                     'publish_time': it['meta'].get('publish_time', ''),
                     'source': '小渔数科闲参谋',
@@ -164,6 +204,13 @@ for mod, sub, col, secs in M:
                 },
             })
             kept.append(bucket[-1])
+            if change_type in ('new', 'updated'):
+                changes.append({
+                    'id': it['id'], 'title': title, 'type': change_type,
+                    'module': mod, 'section': sname, 'kind': it['kind'],
+                    'date': STAMP, 'ts': NOW,
+                    'words': len(text),
+                })
         new_sections.append({'module': mod, 'module_sub': sub, 'section': sname,
                              'color': col, 'count': len(bucket), 'items': bucket})
 
@@ -252,6 +299,8 @@ for it in kept:
 out = {
     'brand': '授渔未来',
     'version': items['sec-76']['meta'].get('version', ''),
+    'generated_at': NOW,
+    'generated_at_text': STAMP,
     'modules': [],
     'sections': new_sections,
     'stats': {
@@ -292,6 +341,59 @@ for mod, sub, col, secs in M:
 with open('work/data3.json', 'w', encoding='utf-8') as f:
     json.dump(out, f, ensure_ascii=False, indent=1)
 
+# ---------- 5. 更新日志 ----------
+history = []
+if os.path.exists(LOG_PATH):
+    try:
+        history = json.load(open(LOG_PATH, encoding='utf-8')).get('versions', [])
+    except Exception:
+        history = []
+
+added = [c for c in changes if c['type'] == 'new']
+updated = [c for c in changes if c['type'] == 'updated']
+
+if IS_BASELINE:
+    # 首次收录：记录基线，不标记新增
+    record = {
+        'date': STAMP[:10], 'time': STAMP[11:], 'ts': NOW, 'version': out['version'],
+        'type': 'baseline',
+        'summary': {'added': 0, 'updated': 0, 'total': len(kept)},
+        'note': '知识库首次收录，建立内容基线。',
+        'changes': [],
+    }
+    history.insert(0, record)
+else:
+    record = {
+        'date': STAMP[:10], 'time': STAMP[11:], 'ts': NOW, 'version': out['version'],
+        'type': 'update',
+        'summary': {'added': len(added), 'updated': len(updated), 'total': len(kept)},
+        'note': ('本周无内容变化' if not changes else
+                 f'新增 {len(added)} 条，更新 {len(updated)} 条'),
+        'changes': changes,
+    }
+    # 同一天多次运行则合并到当天记录
+    if history and history[0].get('date') == record['date'] and history[0].get('type') == 'update':
+        h0 = history[0]
+        h0['changes'] = h0.get('changes', []) + changes
+        h0['summary'] = {
+            'added': h0['summary']['added'] + len(added),
+            'updated': h0['summary']['updated'] + len(updated),
+            'total': len(kept),
+        }
+        h0['time'] = STAMP[11:]
+        h0['ts'] = NOW
+        h0['note'] = (f"新增 {h0['summary']['added']} 条，更新 {h0['summary']['updated']} 条"
+                      if h0['changes'] else '本日累计无内容变化')
+    else:
+        history.insert(0, record)
+
+changelog = {
+    'latest': history[0] if history else record,
+    'versions': history[:60],          # 保留最近 60 次更新记录
+}
+with open('work/changelog.json', 'w', encoding='utf-8') as f:
+    json.dump(changelog, f, ensure_ascii=False, indent=1)
+
 print(f"\n对外知识库重建完成：{len(M)} 模块 / {len(new_sections)} 板块 / {len(kept)} 条目")
 for m in out['modules']:
     print(f"  ◆ {m['name']}（{m['sub']}） {m['count']} 条")
@@ -302,3 +404,6 @@ print('统计:', out['stats'])
 # 清洗效果核查
 raw_hits = sum(len(re.findall(r'\[待核实\]|核查备注|AI示意图|\[图片[：:]', it['html'])) for it in kept)
 print(f'清洗后残留内部标记: {raw_hits}')
+print(f"变更：新增 {len(added)} / 更新 {len(updated)}  → changelog.json（历史 {len(history)} 条）")
+for c in changes[:12]:
+    print(f"   [{c['type']}] {c['module']} / {c['section']} :: {c['title'][:40]}")

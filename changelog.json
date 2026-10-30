@@ -1,0 +1,46 @@
+{
+ "latest": {
+  "date": "2026-10-30",
+  "time": "11:08",
+  "ts": 1793329698,
+  "version": "V2026.10.12",
+  "type": "update",
+  "summary": {
+   "added": 0,
+   "updated": 0,
+   "total": 70
+  },
+  "note": "本周无内容变化",
+  "changes": []
+ },
+ "versions": [
+  {
+   "date": "2026-10-30",
+   "time": "11:08",
+   "ts": 1793329698,
+   "version": "V2026.10.12",
+   "type": "update",
+   "summary": {
+    "added": 0,
+    "updated": 0,
+    "total": 70
+   },
+   "note": "本周无内容变化",
+   "changes": []
+  },
+  {
+   "date": "2026-10-30",
+   "time": "11:07",
+   "ts": 1793329632,
+   "version": "V2026.10.12",
+   "type": "baseline",
+   "summary": {
+    "added": 0,
+    "updated": 0,
+    "total": 70
+   },
+   "note": "知识库首次收录，建立内容基线。",
+   "changes": []
+  }
+ ]
+}
