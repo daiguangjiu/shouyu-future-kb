@@ -87,7 +87,23 @@ with open(os.path.join(OUT, 'index.html'), 'w', encoding='utf-8') as f:
 dst = os.path.join(OUT, 'assets', 'img')
 sync_images('work/assets/img', dst)
 
+# 可下载工具（运营工具模块）
+src_tools = 'work/assets/tools'
+if os.path.isdir(src_tools):
+    dst_tools = os.path.join(OUT, 'assets', 'tools')
+    os.makedirs(dst_tools, exist_ok=True)
+    for _name in sorted(os.listdir(src_tools)):
+        _src = os.path.join(src_tools, _name)
+        _dst = os.path.join(dst_tools, _name)
+        if os.path.isfile(_src) and (not os.path.exists(_dst) or not filecmp.cmp(_src, _dst, shallow=False)):
+            shutil.copy2(_src, _dst)
+    print('工具文件:', os.listdir(dst_tools))
+
 shutil.copy('work/data3.json', os.path.join(OUT, 'data.json'))
+# 100 问源数据副本（供每周刷新在源文件缺失时回退）
+os.makedirs(os.path.join(OUT, 'data'), exist_ok=True)
+if os.path.exists('work/faq100.json'):
+    shutil.copy('work/faq100.json', os.path.join(OUT, 'data', 'faq100.json'))
 if os.path.exists('work/changelog.json'):
     shutil.copy('work/changelog.json', os.path.join(OUT, 'changelog.json'))
 
@@ -102,7 +118,7 @@ with open(os.path.join(OUT, 'data_prev.json'), 'w', encoding='utf-8') as f:
 
 sc = os.path.join(OUT, 'scripts')
 os.makedirs(sc, exist_ok=True)
-for f_ in ['scrape.py', 'mirror.py', 'parse_manual.py', 'rebuild.py', 'build3.py', 'refresh.py']:
+for f_ in ['scrape.py', 'mirror.py', 'parse_manual.py', 'rebuild.py', 'build3.py', 'refresh.py', 'add_new_sources.py']:
     p_ = os.path.join('work', f_)
     if os.path.exists(p_):
         shutil.copy(p_, os.path.join(sc, f_))

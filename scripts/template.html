@@ -378,6 +378,30 @@ footer.ft .disc{max-width:820px;margin:10px auto 0!important;padding-top:11px;bo
 .logsum b.hot{color:#D93F00}
 .logsum span{font-size:11.5px;color:var(--muted)}
 
+
+/* ========== v5：运营工具下载区 + 100 问 ========== */
+.toolbox{margin:0 0 24px}
+.tool-dl{
+  display:flex;align-items:center;gap:16px;padding:18px 20px;border-radius:13px;
+  border:1px solid var(--line);background:linear-gradient(120deg,#F4FBFA,#F7F9FC);
+  box-shadow:var(--shadow);flex-wrap:wrap;
+}
+.tool-ico{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:24px;
+  background:linear-gradient(135deg,#0EA5A5,#12A150);box-shadow:0 4px 14px rgba(14,165,165,.28);flex-shrink:0}
+.tool-info{flex:1;min-width:220px}
+.tool-name{font-size:16.5px;font-weight:700;color:var(--ink)}
+.tool-meta{font-size:12.5px;color:var(--muted);margin-top:4px}
+.dlbtn{
+  display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:10px;
+  background:linear-gradient(135deg,#0EA5A5,#0D9488);color:#fff;font-size:14px;font-weight:650;
+  text-decoration:none;box-shadow:0 4px 14px rgba(14,165,165,.3);transition:.18s;white-space:nowrap;
+}
+.dlbtn:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(14,165,165,.42);color:#fff;text-decoration:none}
+.rd-body p.lead{font-size:15.5px;color:var(--ink2);background:var(--soft);padding:14px 18px;border-radius:10px;
+  border-left:3px solid var(--brand);margin:0 0 20px;line-height:1.9}
+.rd-body ol{padding-left:26px}
+.rd-body ol li{margin:9px 0}
+
 @media print{
   .top,.side,footer.ft,.lb,.toast,.nav2,.rd-foot{display:none!important}
   .wrap{grid-template-columns:1fr;padding:0}
@@ -401,10 +425,10 @@ footer.ft .disc{max-width:820px;margin:10px auto 0!important;padding-top:11px;bo
         <span class="kbd">/</span>
       </div>
       <div class="stats">
-        <div class="stat"><b id="stMod">6</b><span>知识模块</span></div>
-        <div class="stat"><b id="stSec">21</b><span>类目板块</span></div>
-        <div class="stat"><b id="stItem">70</b><span>收录条目</span></div>
-        <div class="stat"><b><em>11.6</em><span style="font-size:11px">万字</span></b><span>内容体量</span></div>
+        <div class="stat"><b id="stMod">—</b><span>知识模块</span></div>
+        <div class="stat"><b id="stSec">—</b><span>类目板块</span></div>
+        <div class="stat"><b id="stItem">—</b><span>收录条目</span></div>
+        <div class="stat"><b><em id="stWord">—</em><span style="font-size:11px">万字</span></b><span>内容体量</span></div>
       </div>
     </div>
     <nav class="tabs" id="tabs"></nav>
@@ -421,7 +445,7 @@ footer.ft .disc{max-width:820px;margin:10px auto 0!important;padding-top:11px;bo
       <div class="hint" id="sideHint">点击板块查看条目</div>
     </div>
     <div class="side-scroll" id="sideBody"></div>
-    <div class="side-f"><span id="sideFoot">共 70 条</span>
+    <div class="side-f"><span id="sideFoot">—</span>
       <span style="display:flex;gap:12px"><a href="#" class="side-chg-link" onclick="goLog(event)">更新日志</a><a href="#" onclick="goIndex(event)">全站目录 →</a></span></div>
   </aside>
   <main class="main" id="main"></main>
@@ -977,7 +1001,17 @@ $('#mobtn').addEventListener('click', ()=>toggleSide());
 $('#mask').addEventListener('click', ()=>toggleSide(false));
 window.addEventListener('resize', ()=>{ if(window.innerWidth>1180) toggleSide(false); });
 
+/* 顶栏统计（随数据动态更新） */
+function renderStats(){
+  const st = DATA.stats || {};
+  $('#stMod').textContent = st.modules != null ? st.modules : MODULES.length;
+  $('#stSec').textContent = st.sections != null ? st.sections : DATA.sections.length;
+  $('#stItem').textContent = st.items != null ? st.items : ORDER.length;
+  $('#stWord').textContent = st.words != null ? (st.words/10000).toFixed(1) : '—';
+}
+
 buildTabs();
+renderStats();
 renderSide();
 renderMain();
 

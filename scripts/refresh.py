@@ -74,8 +74,11 @@ def main():
     # 4. 图片本地化
     run(f'{PY} work/mirror.py', '镜像正文图片到本地')
 
+    # 4.5 生成新增来源（开店100问 + 运营工具）
+    run(f'{PY} work/add_new_sources.py', '生成新增来源（100 问手册 + 运营工具）')
+
     # 5. 融合为 data2.json
-    run(f'{PY} work/merge.py', '融合官方内容与手册章节')
+    run(f'{PY} work/merge.py', '融合官方内容、手册章节与新增来源')
 
     # 6. 重建 + 差异比对（打红标、写更新日志）
     run(f'{PY} work/rebuild.py', '重建数据并比对差异（新增/更新标记 + 更新日志）')
