@@ -1,152 +1,33 @@
 {
  "latest": {
-  "date": "2026-11-06",
-  "time": "11:42",
-  "ts": 1793936542,
+  "date": "2026-11-09",
+  "time": "10:43",
+  "ts": 1794192182,
   "version": "V2026.10.12",
   "type": "update",
   "summary": {
-   "added": 12,
+   "added": 0,
    "updated": 0,
    "total": 82
   },
-  "note": "新增 12 条，更新 0 条",
-  "changes": [
-   {
-    "id": "faq-c1",
-    "title": "第一章 开店入门（Q1–Q10）",
-    "type": "new",
-    "module": "开店100问",
-    "section": "第一章 开店入门（Q1–Q10）",
-    "kind": "faq_chapter",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 1370
-   },
-   {
-    "id": "faq-c2",
-    "title": "第二章 账号与信用（Q11–Q20）",
-    "type": "new",
-    "module": "开店100问",
-    "section": "第二章 账号与信用（Q11–Q20）",
-    "kind": "faq_chapter",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 1234
-   },
-   {
-    "id": "faq-c3",
-    "title": "第三章 发布宝贝（Q21–Q30）",
-    "type": "new",
-    "module": "开店100问",
-    "section": "第三章 发布宝贝（Q21–Q30）",
-    "kind": "faq_chapter",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 1399
-   },
-   {
-    "id": "faq-c4",
-    "title": "第四章 流量与曝光（Q31–Q42）",
-    "type": "new",
-    "module": "开店100问",
-    "section": "第四章 流量与曝光（Q31–Q42）",
-    "kind": "faq_chapter",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 1858
-   },
-   {
-    "id": "faq-c5",
-    "title": "第五章 价格与转化（Q43–Q50）",
-    "type": "new",
-    "module": "开店100问",
-    "section": "第五章 价格与转化（Q43–Q50）",
-    "kind": "faq_chapter",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 1098
-   },
-   {
-    "id": "faq-c6",
-    "title": "第六章 沟通与成交（Q51–Q58）",
-    "type": "new",
-    "module": "开店100问",
-    "section": "第六章 沟通与成交（Q51–Q58）",
-    "kind": "faq_chapter",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 1031
-   },
-   {
-    "id": "faq-c7",
-    "title": "第七章 发货与物流（Q59–Q66）",
-    "type": "new",
-    "module": "开店100问",
-    "section": "第七章 发货与物流（Q59–Q66）",
-    "kind": "faq_chapter",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 981
-   },
-   {
-    "id": "faq-c8",
-    "title": "第八章 售后与纠纷（Q67–Q75）",
-    "type": "new",
-    "module": "开店100问",
-    "section": "第八章 售后与纠纷（Q67–Q75）",
-    "kind": "faq_chapter",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 1276
-   },
-   {
-    "id": "faq-c9",
-    "title": "第九章 违规红线与防骗（Q76–Q85）",
-    "type": "new",
-    "module": "开店100问",
-    "section": "第九章 违规红线与防骗（Q76–Q85）",
-    "kind": "faq_chapter",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 1433
-   },
-   {
-    "id": "faq-c10",
-    "title": "第十章 费用与回款（Q86–Q93）",
-    "type": "new",
-    "module": "开店100问",
-    "section": "第十章 费用与回款（Q86–Q93）",
-    "kind": "faq_chapter",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 1307
-   },
-   {
-    "id": "faq-c11",
-    "title": "第十一章 进阶运营（Q94–Q100）",
-    "type": "new",
-    "module": "开店100问",
-    "section": "第十一章 进阶运营（Q94–Q100）",
-    "kind": "faq_chapter",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 1238
-   },
-   {
-    "id": "tool-link-stats",
-    "title": "闲鱼店铺链接数据统计表",
-    "type": "new",
-    "module": "运营工具",
-    "section": "数据统计工具",
-    "kind": "tool",
-    "date": "2026-11-06 11:42",
-    "ts": 1793936542,
-    "words": 1052
-   }
-  ]
+  "note": "本周无内容变化",
+  "changes": []
  },
  "versions": [
+  {
+   "date": "2026-11-09",
+   "time": "10:43",
+   "ts": 1794192182,
+   "version": "V2026.10.12",
+   "type": "update",
+   "summary": {
+    "added": 0,
+    "updated": 0,
+    "total": 82
+   },
+   "note": "本周无内容变化",
+   "changes": []
+  },
   {
    "date": "2026-11-06",
    "time": "11:42",
